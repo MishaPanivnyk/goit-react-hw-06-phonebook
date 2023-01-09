@@ -1,17 +1,16 @@
-import PropTypes from 'prop-types';
 import { useState } from 'react';
-// import { Component } from 'react';
-// import { nanoid } from 'nanoid';
+import { useSelector, useDispatch } from 'react-redux';
+import { addContact } from 'redux/contacts/contactSlice';
+import { getContacts } from 'redux/contacts/selectors';
 import { Form } from 'components/ContactForm/ContactForm.styled';
 
-export default function ContactForm({ formSubmitHandler }) {
+export default function ContactForm() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-  // nameInputId = nanoid();
+  const contacts = useSelector(getContacts);
+  const dispatch = useDispatch();
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    formSubmitHandler(name, number);
+  const resetForm = () => {
     setName('');
     setNumber('');
   };
@@ -32,9 +31,19 @@ export default function ContactForm({ formSubmitHandler }) {
     }
   };
 
-  // reset = () => {
-  //   this.setState({ name: '', number: '' });
-  // };
+  const handleSubmit = e => {
+    e.preventDefault();
+    const contact = { name, number };
+    for (let item of contacts) {
+      if (contact.name.toLowerCase() === item.name.toLowerCase()) {
+        alert(`${contact.name} is already in contacts`);
+        resetForm();
+        return;
+      }
+    }
+    dispatch(addContact(contact));
+    resetForm();
+  };
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -68,7 +77,3 @@ export default function ContactForm({ formSubmitHandler }) {
     </Form>
   );
 }
-
-ContactForm.propTypes = {
-  formSubmitHandler: PropTypes.func.isRequired,
-};
