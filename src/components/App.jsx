@@ -13,7 +13,7 @@ export default function App() {
       <Title>Phonebook</Title>
       <ContactForm />
       <SubTitle>Contacts</SubTitle>
-      <Filter />
+      {contacts.length > 0 && <Filter />}
       {contacts.length === 0 && <Message>There is not any contacts</Message>}
       <ContactList />
     </Container>
